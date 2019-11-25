@@ -57,6 +57,9 @@ class AlexaStateListener(object):
     def on_finished(self):
         logger.info('on_finished')
 
+    def on_directive(self, response):
+        pass
+
 
 class Alexa(object):
     API_VERSION = 'v20160207'
@@ -297,6 +300,9 @@ class Alexa(object):
                         '{}.{} is not implemented yet'.format(namespace, name))
             else:
                 logger.info('{} is not implemented yet'.format(namespace))
+
+            if callable(self.state_listener.on_directive):
+                self.state_listener.on_directive(directive)
 
         except KeyError as e:
             logger.exception(e)
