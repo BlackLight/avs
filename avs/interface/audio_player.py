@@ -17,7 +17,7 @@ try:
 except ImportError:
     from urlparse import urlparse
 
-from avs.player import Player, get_player
+from avs.player import get_player
 
 logger = logging.getLogger('AudioPlayer')
 
@@ -81,17 +81,13 @@ def get_audio_url(audio_url, timeout=3000):
 class AudioPlayer(object):
     STATES = {'IDLE', 'PLAYING', 'STOPPED', 'PAUSED', 'BUFFER_UNDERRUN', 'FINISHED'}
 
-    def __init__(self, alexa, audio_player=None):
+    def __init__(self, alexa, audio_player='default'):
         self.alexa = alexa
         self.token = ''
         self.state = 'IDLE'
 
-        if not audio_player:
-            P = Player
-        else:
-            P = get_player(audio_player)
-
-        self.player = P()
+        Player = get_player(audio_player)
+        self.player = Player()
         self.player.add_callback('eos', self.PlaybackFinished)
         self.player.add_callback('error', self.PlaybackFailed)
 

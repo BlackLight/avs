@@ -8,25 +8,6 @@ We can specify a player using environment variable PLAYER (mpv, mpg123, gstreame
 
 import os
 
-player_option = os.getenv('PLAYER', 'default').lower()
-
-if player_option.find('mpv') >= 0:
-    from .mpv_player import Player
-elif player_option.find('mpg123') >= 0:
-    from .mpg123_player import Player
-elif player_option.find('gstreamer') >= 0:
-    from .gstreamer_player import Player
-else:
-    try:
-        from .gstreamer_player import Player
-    except ImportError:
-        if os.system('which mpv >/dev/null') == 0:
-            from .mpv_player import Player
-        elif os.system('which mpg123 >/dev/null') == 0:
-            from .mpg123_player import Player
-        else:
-            raise ImportError('No player available, install one of the players: gstreamer, mpv and mpg123 first')
-
 
 def get_player(name):
     if name.find('mpv') >= 0:
@@ -39,7 +20,18 @@ def get_player(name):
         from .gstreamer_player import Player
         return Player
     else:
-        raise RuntimeError('Unsupported player {}. Supported players: mpv, mpg123, gstreamer')
+        try:
+            from .gstreamer_player import Player
+            return Player
+        except ImportError:
+            if os.system('which mpv >/dev/null') == 0:
+                from .mpv_player import Player
+                return Player
+            elif os.system('which mpg123 >/dev/null') == 0:
+                from .mpg123_player import Player
+                return Player
+            else:
+                raise ImportError('No player available, install one of the players: gstreamer, mpv and mpg123 first')
 
 
 __all__ = ['Player']
