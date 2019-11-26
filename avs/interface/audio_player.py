@@ -87,10 +87,11 @@ class AudioPlayer(object):
         self.state = 'IDLE'
 
         if not audio_player:
-            self.player = Player()
+            P = Player
         else:
-            self.player = get_player(audio_player)
+            P = get_player(audio_player)
 
+        self.player = P()
         self.player.add_callback('eos', self.PlaybackFinished)
         self.player.add_callback('error', self.PlaybackFailed)
 
