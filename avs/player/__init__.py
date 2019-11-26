@@ -27,4 +27,19 @@ else:
         else:
             raise ImportError('No player available, install one of the players: gstreamer, mpv and mpg123 first')
 
+
+def get_player(name):
+    if name.find('mpv') >= 0:
+        from .mpv_player import Player
+        return Player
+    elif name.find('mpg123') >= 0:
+        from .mpg123_player import Player
+        return Player
+    elif name.find('gstreamer') >= 0:
+        from .gstreamer_player import Player
+        return Player
+    else:
+        raise RuntimeError('Unsupported player {}. Supported players: mpv, mpg123, gstreamer')
+
+
 __all__ = ['Player']

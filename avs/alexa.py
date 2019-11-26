@@ -25,6 +25,7 @@ import hyper
 from avs.mic import Audio
 
 from avs.interface.alerts import Alerts
+from avs.interface.audio_player import AudioPlayer
 from avs.interface.speaker import Speaker
 from avs.interface.speech_recognizer import SpeechRecognizer
 from avs.interface.speech_synthesizer import SpeechSynthesizer
@@ -65,15 +66,10 @@ class Alexa(object):
     API_VERSION = 'v20160207'
 
     def __init__(self, config=None, audio_player='default'):
-        if not os.getenv('PLAYER'):
-            os.putenv('PLAYER', audio_player.lower())
-
-        from avs.interface.audio_player import AudioPlayer
-
         self.event_queue = queue.Queue()
         self.SpeechRecognizer = SpeechRecognizer(self)
         self.SpeechSynthesizer = SpeechSynthesizer(self)
-        self.AudioPlayer = AudioPlayer(self)
+        self.AudioPlayer = AudioPlayer(self, audio_player=audio_player)
         self.Speaker = Speaker(self)
         self.Alerts = Alerts(self)
         self.System = System(self)
