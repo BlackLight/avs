@@ -10,6 +10,7 @@ import signal
 import sys
 import tempfile
 import threading
+import time
 import uuid
 
 if sys.version_info < (3, 0):
@@ -157,6 +158,11 @@ class Alexa(object):
                     timeout=0.25)
             except queue.Empty:
                 event = None
+
+            if not conn._sock:
+                logger.warning('The upstream server unexpectedly closed the connection')
+                time.sleep(2)
+                break
 
             # we want to avoid blocking if the data wasn't for stream downchannel
             while conn._sock.can_read:
