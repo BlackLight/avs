@@ -159,14 +159,14 @@ class Alexa(object):
             except queue.Empty:
                 event = None
 
+            # we want to avoid blocking if the data wasn't for stream downchannel
+            while conn._sock and conn._sock.can_read:
+                conn._single_read()
+
             if not conn._sock:
                 logger.warning('The upstream server unexpectedly closed the connection')
                 time.sleep(2)
                 break
-
-            # we want to avoid blocking if the data wasn't for stream downchannel
-            while conn._sock.can_read:
-                conn._single_read()
 
             while downchannel.data:
                 framebytes = downchannel._read_one_frame()
